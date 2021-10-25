@@ -9,11 +9,11 @@ import random as r
 import gc
 
 # define cross entropy loss function
-def compute_loss(true, pred):
-    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(true, pred), axis=-1)
+def compute_loss(labels, logits):
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels, logits), axis=-1)
 
-def compute_accuracy(true, pred):
-    return tf.reduce_mean(tf.keras.metrics.categorical_accuracy(true, pred))
+def compute_accuracy(labels, logits):
+    return tf.reduce_mean(tf.keras.metrics.categorical_accuracy(labels, logits))
 
 def dummy_data_init(number_of_workers, data_number, pretrain = False, true_label = None):
     '''
@@ -140,7 +140,7 @@ def take_gradient(number_of_workers, random_lists, real_data, real_labels, local
         # server part
         predict = server.forward(real_local_output)
         # compute loss
-        loss = compute_loss(predict, label)
+        loss = compute_loss(label, predict)
         # training accuracy
         train_acc = compute_accuracy(label, predict)
 
